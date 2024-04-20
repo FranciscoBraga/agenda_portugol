@@ -1,39 +1,17 @@
 programa
 {
+	//https://github.com/UNIVALI-LITE-BACKUP/Portugol-Studio-Recursos/tree/master/exemplos/bibliotecas/arquivos
 	inclua biblioteca Arquivos --> a 
 	//Agenda Telefônica
 	//Desenvolva um programa que funcione como uma agenda telefônica
 	//Permita ao usuário adicionar, editar e excluir contatos com nome, telefone , endereço
-	
-	cadeia lista[100][3] 
-	
-	inteiro  n =1
+	const cadeia CAMINHO =  "./bd.txt"
+     cadeia agenda[5][3]
 //problema só está inserindo um aquivo por vez
-funcao inserir(){
-    inteiro arquivo = a.abrir_arquivo("./bd.txt", a.MODO_ACRESCENTAR)
-    cadeia nome ,numero ,endereco
-    
-	    /*para(inteiro i = 0; i < valor; i++){
-	     	para(inteiro c = 0; c < 3; c++){
-	     	    se (lista[i][c] == "" e c == 0){
-	     	     			escreva("\nEscreva o Contato:\n")
-     	   					leia(nome)
-     	   					lista[i][c] = nome
-	     	     		}
-	     	     	se (lista[i][c] == "" e c == 1){
-	     	     			escreva("\nEscreva o Telefone:\n")
-     	 					leia(numero)
-     	 					lista[i][c] = numero
-	     	     		}
-	     	     	se (lista[i][c] == "" e c == 2){
-	     	     			escreva("\nEscreva o Endereço:\n")
-     	 					leia(endereco)
-     	 					lista[i][c] = endereco
-     	 					
-	     	     		}
-		
-	     	     }
-	          }*/
+     funcao inserir(){
+        limpa()
+        inteiro arquivo = a.abrir_arquivo(CAMINHO, a.MODO_ACRESCENTAR)
+        cadeia nome ,numero ,endereco
 	         escreva("\nEscreva o Contato:\n")
      	    leia(nome)
      	    escreva("\nEscreva o Telefone:\n")
@@ -45,14 +23,16 @@ funcao inserir(){
 	        a.escrever_linha(numero, arquivo)
 	        a.escrever_linha(endereco, arquivo)
 	        a.fechar_arquivo(arquivo)
+	        listar()
+	        agendaPreenchida()
      	   opcoes()
      	}
 // só lista uma única linha
-funcao listar(){
+    funcao listar(){
 	 limpa()
 	 inteiro linha = 1
 	 cadeia separacao = "------------------------------\n"
-	 inteiro arquivo = a.abrir_arquivo("./bd.txt", a.MODO_LEITURA)
+	 inteiro arquivo = a.abrir_arquivo(CAMINHO, a.MODO_LEITURA)
 	 escreva("---------Contatos------------\n")
 	 enquanto( nao a.fim_arquivo(arquivo)){
 	   escreva(a.ler_linha(arquivo),"\n")
@@ -62,45 +42,55 @@ funcao listar(){
 	   }
 	   linha ++
 	 }
-	/*para(inteiro l = 0; l< 100; l++){
-		se(lista[l][0] != ""){
-	     	escreva("\n Listar\n-Nome: " , lista[l][0] +"\n-Numero: ", lista[l][1] +"\n-Endereço: ", lista[l][2])
-		}
-	   }*/
+	 a.fechar_arquivo(arquivo)
+    }
 
-	   
-	}
-     
-funcao editar(){
- 	    
-	    para(inteiro l = 0; l< 100; l++){
-	     	se(lista[l][0] == nome){
-	     		escreva("Atualize o Nome:\n")
-	        		leia(lista[l][0])
-	
-	     }}
+    funcao agendaPreenchida(){
+    	 inteiro arquivo = a.abrir_arquivo(CAMINHO, a.MODO_LEITURA)
+	 enquanto(nao a.fim_arquivo(arquivo)){
+	   para(inteiro i =0; i<5;i++){
+	     para(inteiro c= 0; c<3; c++){
+	     	agenda[i][c] = a.ler_linha(arquivo)
+	     }
+	   }	
+	 }
+	 a.fechar_arquivo(arquivo)
+	 opcoes()
+    }
 	     
-     	}
+     funcao editar(){  
+         cadeia pesquisa , substituto 
+         inteiro arquivo = a.abrir_arquivo(CAMINHO, a.MODO_ESCRITA)
+         escreva("Digite o nome para editar os dados\n")
+         leia(pesquisa)
+         escreva("Digite o nome  correto\n")
+         leia(substituto)
+         //a.substituir_texto(CAMINHO, pesquisa, substituto, verdadeiro)
 
-funcao remover(){
-         cadeia nome
-	    escreva("Escolha qual número do convidado para remover:")
-	    listar()
-		escreva("\nEscreva o Nome do Contato:\n")
-		leia(nome)
-		para(inteiro l = 0;l < 100; l++){
-		 se (lista[l][0] == nome){
-		 	escreva(" nome"+ lista[l][0] + "\n")
-		 	lista[l][0] = " "
-		 	lista[l][1] = " "
-		 	lista[l][2] = " "
-		 }
-	   }
-	  listar()
-	  opcoes()
+	    a.fechar_arquivo(arquivo)
+	    escreva("Alterado com Sucesso")
+	    agendaPreenchida()
+	    opcoes()
      }
+
+    funcao remover(){
+         cadeia pesquisa 
+         inteiro arquivo = a.abrir_arquivo(CAMINHO, a.MODO_ESCRITA)
+         escreva("Digite o nome para editar os dados\n")
+         leia(pesquisa)
+         escreva("Digite o numero correto\n")
+         a.substituir_texto(CAMINHO, pesquisa, " ", verdadeiro)
+	    a.fechar_arquivo(arquivo)
+	    escreva("Alterado com Sucesso")
+	    listar()
+	    opcoes()
+     }
+
+   funcao  sair(){
+   	 escreva("Até mais .....")
+   	}
      
-funcao opcoes(){
+   funcao opcoes(){
 
 	cadeia nome , numero , endereco
 	inteiro opcao
@@ -118,20 +108,19 @@ funcao opcoes(){
 	     	caso 1: inserir() pare
 	     	    
 	     caso 2:
-	     	listar()
-	     	pare
+	     	listar() pare
 
-	     caso 3:leia(nome) 
-	     	leia(numero) 
-	    		leia(endereco)
-	     	editar(nome,numero,endereco)
+	     caso 3:
+	     	editar()
 	     	pare
 	     	
-	     caso 4:remover()
+	     caso 4:remover() pare
+	     caso contrario:sair() pare
 	     }
 	}
 
 	funcao inicio(){
+		agendaPreenchida()
 	     opcoes()
 	}
 }
@@ -140,10 +129,10 @@ funcao opcoes(){
  * Esta seção do arquivo guarda informações do Portugol Studio.
  * Você pode apagá-la se estiver utilizando outro editor.
  * 
- * @POSICAO-CURSOR = 2109; 
- * @DOBRAMENTO-CODIGO = [15, 11, 50];
+ * @POSICAO-CURSOR = 1019; 
+ * @DOBRAMENTO-CODIGO = [88, 92];
  * @PONTOS-DE-PARADA = ;
- * @SIMBOLOS-INSPECIONADOS = ;
+ * @SIMBOLOS-INSPECIONADOS = {agenda, 9, 12, 6};
  * @FILTRO-ARVORE-TIPOS-DE-DADO = inteiro, real, logico, cadeia, caracter, vazio;
  * @FILTRO-ARVORE-TIPOS-DE-SIMBOLO = variavel, vetor, matriz, funcao;
  */
